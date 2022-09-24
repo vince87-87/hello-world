@@ -1,7 +1,7 @@
 <form action="action_page.php">
   <div class="container">
-    <h2>Welcome to vincent Newsletter</h2>
-    <p>Lorem ipsum..</p>
+    <h2>Welcome to Vincent Lee Hello World Newsletter</h2>
+    <p>Enter Name & Email To subscribe to newsletter</p>
   </div>
 
   <div class="container" style="background-color:white">
