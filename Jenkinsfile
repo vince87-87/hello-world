@@ -4,11 +4,10 @@ pipeline {
         maven "MAVEN3"
         jdk "OracleJDK8"
     }
-    environment {}
     stages {
         stage('scm'){
             steps {
-                git 'git@github.com:vince87-87/hello-world.git'
+                git credentialsId: 'githublogin', url: 'git@github.com:vince87-87/hello-world.git'
             }
         }
 
