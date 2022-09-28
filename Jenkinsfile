@@ -11,6 +11,13 @@ pipeline {
             }
         }
 
+        stage('scan_code'){
+            withSonarQubeEnv('sonarserver') {
+                sh '''mvn clean package sonar:sonar \
+                -Dsonar.projectKey=devops_assignment_1'''
+            }
+        }
+
         stage('Build'){
             steps {
                 echo "Running ${JOB_NAME} on build job ${BUILD_NUMBER}"
