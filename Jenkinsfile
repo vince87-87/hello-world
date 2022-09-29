@@ -12,9 +12,11 @@ pipeline {
         }
 
         stage('scan_code'){
-            withSonarQubeEnv('sonarserver') {
-                sh '''mvn clean package sonar:sonar \
-                -Dsonar.projectKey=devops_assignment_1'''
+            steps {
+                withSonarQubeEnv('sonarserver') {
+                    sh '''mvn clean package sonar:sonar \
+                    -Dsonar.projectKey=devops_assignment_1'''
+                }
             }
         }
 
