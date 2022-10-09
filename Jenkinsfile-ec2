@@ -1,12 +1,5 @@
 pipeline {
     agent any 
-    environment {
-        AWS_ACCOUNT_ID="877249880464"
-        AWS_DEFAULT_REGION="ap-southeast-1" 
-        IMAGE_REPO_NAME="mytomcat"
-        IMAGE_TAG="test"
-        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
-    }
     tools {
         maven "MAVEN3"
         jdk "OracleJDK8"
@@ -18,7 +11,17 @@ pipeline {
             }
         }
 
-        stage('build maven'){
+        stage('scan_code'){
+            steps {
+                withSonarQubeEnv('sonarserver') {
+                    sh '''mvn clean package sonar:sonar \
+                    -Dsonar.projectKey=devops_assignment_1 \
+                    -Dsonar.projectName=devops_assignment_1'''
+                }
+            }
+        }
+
+        stage('Build'){
             steps {
                 echo "Running ${JOB_NAME} on build job ${BUILD_NUMBER}"
                 sh 'mvn clean install'
@@ -31,24 +34,20 @@ pipeline {
             }
         }
 
-        stage('build docker image') {
+        stage('test') {
             steps {
-                script {
-                    sh 'docker build -t mytomcat .'
-                }
+                echo "Perform unit testing!"
+                sh 'mvn verify'
             }
         }
 
-        stage('push to aws ecr') {
+        stage('deploy') {
             steps {
-                script {
-                    sh 'aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com'
-                    sh 'docker tag mytomcat:${IMAGE_TAG} ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/mytomcat:${IMAGE_TAG}'
-                    sh 'docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/mytomcat:${IMAGE_TAG}'
+                sshagent(['tomcat-ec2-user']) {
+                    sh "scp -o StrictHostKeyChecking=no webapp/target/webapp.war ec2-user@172.31.36.227:/opt/tomcat/webapps"
                 }
             }
         }
-    }
 
 
         // stage('Checkstyle Analysis'){
