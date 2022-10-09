@@ -34,7 +34,7 @@ pipeline {
         stage('build docker image') {
             steps {
                 script {
-                    sh 'docker build -t mytomcat .'
+                    sh 'docker build -t mytomcat:${IMAGE_TAG} .'
                 }
             }
         }
