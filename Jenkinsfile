@@ -1,7 +1,7 @@
 pipeline {
     agent any 
     environment {
-        AWS_ACCOUNT_ID="877249880464"
+        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
         AWS_DEFAULT_REGION="ap-southeast-1" 
         IMAGE_REPO_NAME="mytomcat"
         IMAGE_TAG="test"
