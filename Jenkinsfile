@@ -14,6 +14,8 @@ pipeline {
     stages {
         stage('scm'){
             steps {
+                // using double quotes "" for credentials will leak credentials
+                // using single quotes '' for credentials prevent leaking of credentials on build logs
                 git credentialsId: 'githublogin', url: 'git@github.com:vince87-87/hello-world.git'
             }
         }
@@ -46,6 +48,14 @@ pipeline {
                     sh 'docker tag mytomcat:${IMAGE_TAG} ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/mytomcat:${IMAGE_TAG}'
                     sh 'docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/mytomcat:${IMAGE_TAG}'
                 }
+            }
+        }
+
+        stage('deploy to eks') {
+            steps {
+                script {
+                    sh 'aws eks update-kubeconfig --region ap-southeast-1 --name eksdemo1' // create kubeconfig file
+                    sh 'kubectl apply -f manifests/.' // create tomcat deployment & ingress
             }
         }
     }
