@@ -4,7 +4,7 @@ pipeline {
         AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
         AWS_DEFAULT_REGION="ap-southeast-1" 
         IMAGE_REPO_NAME="mytomcat"
-        IMAGE_TAG="test"
+        IMAGE_TAG="latest"
         REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
     }
     tools {
@@ -45,8 +45,8 @@ pipeline {
             steps {
                 script {
                     sh 'aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com'
-                    sh 'docker tag mytomcat:${IMAGE_TAG} ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/mytomcat:${IMAGE_TAG}'
-                    sh 'docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/mytomcat:${IMAGE_TAG}'
+                    sh 'docker tag mytomcat:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}'
+                    sh 'docker push ${REPOSITORY_URI}:${IMAGE_TAG}'
                 }
             }
         }

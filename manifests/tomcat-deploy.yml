@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: tomcat
-          image: 877249880464.dkr.ecr.ap-southeast-1.amazonaws.com/mytomcat:test
+          image: 877249880464.dkr.ecr.ap-southeast-1.amazonaws.com/mytomcat:latest
           ports:
             - containerPort: 8080
 ---

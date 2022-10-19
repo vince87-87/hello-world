@@ -7,7 +7,6 @@ metadata:
     # Load Balancer Name
     alb.ingress.kubernetes.io/load-balancer-name: externaldns-ingress-tomcat
     # Ingress Core Settings
-    #kubernetes.io/ingress.class: "alb" (OLD INGRESS CLASS NOTATION - STILL WORKS BUT RECOMMENDED TO USE IngressClass Resource)
     alb.ingress.kubernetes.io/scheme: internet-facing
     # Health Check Settings
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP 
