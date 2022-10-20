@@ -1,7 +1,7 @@
 pipeline {
     agent any 
     environment {
-        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+        AWS_ACCOUNT_ID=sh(script: 'aws sts get-caller-identity --query "Account" --output text', returnStdout:true).trim()
         AWS_DEFAULT_REGION="ap-southeast-1" 
         IMAGE_REPO_NAME="mytomcat"
         IMAGE_TAG="latest"
@@ -56,9 +56,11 @@ pipeline {
                 script {
                     sh 'aws eks update-kubeconfig --region ap-southeast-1 --name eksdemo1' // create kubeconfig file
                     sh 'kubectl apply -f manifests/.' // create tomcat deployment & ingress
+                }
             }
         }
     }
+}
 
 
         // stage('Checkstyle Analysis'){
@@ -84,4 +86,3 @@ pipeline {
         //       }
         //     }
         // }
-}
